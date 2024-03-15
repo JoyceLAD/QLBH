@@ -5,7 +5,7 @@ if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: " . $mysqli->connect_error;
     exit();
 }
-//Kiem tra quyen chinh sua khach hanng
+//Kiem tra quyen export khach hanng
 $username = $_SESSION['login'];
 $sql1 = "SELECT id_tk FROM taikhoan WHERE username = '".$username."'";
 $id =mysqli_fetch_assoc(mysqli_query($mysqli, $sql1))['id_tk'];
@@ -18,12 +18,21 @@ if($result1 <=0){
     header("Location: http://localhost/QuanLyBanHang/customer.php");
 }else{
     if(isset($_POST['export'])){
-        $sql = "SELECT * INTO OUTFILE 'C:\Users\Duyla\dskh.sql' FROM khachhang";
-        if (mysqli_query($mysqli, $sql)) {
-        echo "Database backup successfully created!";
-        } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($mysqli);
-}
+        $sql = "SELECT * FROM khachhang  ";
+        if(mysqli_query($mysqli, $sql)){
+            $filename = "danh_sach_khach_hang".date("Y-m-d_H-i-s").".txt";
+            $file = fopen($filename, "w") or die("Error");
+            while ($row = mysqli_fetch_assoc(mysqli_query($mysqli, $sql))) {
+                fwrite($file, "ID: " . $row['id_kh'] . ", Tên: " . $row['ten'] . ", Địa chỉ: " . $row['dia_chi'] . "\n");
+            }
+            fclose($file);
+        }
+//         $sql = "SELECT * INTO OUTFILE 'C:\Users\Duyla\dskh.sql' FROM khachhang";
+//         if (mysqli_query($mysqli, $sql)) {
+//         echo "Database backup successfully created!";
+//         } else {
+//         echo "Error: " . $sql . "<br>" . mysqli_error($mysqli);
+// }
     
     }
 }

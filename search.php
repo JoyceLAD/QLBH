@@ -8,61 +8,18 @@ if ($mysqli -> connect_errno) {
   echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
   exit();
 }
-
-
-$tkh = 0;
-$tdh = 0;
-
-//kiem tra xem tai khoan co thuoc cong ty nao khong
-$username = $_SESSION['login'];
-$sql = "SELECT phanquyen.id_cty 
-FROM taikhoan inner join phanquyen on taikhoan.id_tk = phanquyen.id_tk
-WHERE username = '".$username."'";
-$result  = mysqli_query($mysqli, $sql);
-$sql_ten = "SELECT * FROM taikhoan WHERE username = '".$username."'";
-$ten = mysqli_fetch_assoc(mysqli_query($mysqli, $sql_ten))['ten'];
-if($result){
-    $id_cty = mysqli_fetch_assoc($result)['id_cty'];
-    //danh sach khach hang moi
-    $sql_kh = "SELECT  * 
-    FROM khachhang 
-    inner join congty on khachhang.cong_ty = congty.ten_congty 
-    ORDER BY khachhang.id_kh 
-    DESC LIMIT 10";
-    $list_kh = mysqli_query($mysqli, $sql_kh);
-    //tong so khach hang
-    $sql_tkh = "SELECT  COUNT(*) AS tkh
-    FROM khachhang 
-    inner join congty on khachhang.cong_ty = congty.ten_congty";
-    $tkh = mysqli_fetch_assoc(mysqli_query($mysqli, $sql_tkh))['tkh'];
-    // echo $tkh."<br>";
-    
-    //danh sach don hang moi
-    $sql_dh = "SELECT  * 
-    FROM donhang 
-    inner join khachhang on donhang.id_cty = khachhang.id_kh 
-    WHERE id_cty = '".$id_cty."'";
-    $list_dh = mysqli_query($mysqli, $sql_dh);
-
-    //tong so don hang
-    $sql_tdh = "SELECT  COUNT(*) AS tdh
-    FROM donhang 
-    inner join khachhang on donhang.id_cty = khachhang.id_kh 
-    WHERE id_cty = '".$id_cty."'";
-    $tdh = mysqli_fetch_assoc(mysqli_query($mysqli, $sql_tdh))['tdh'];
-    // echo $tdh."<br>";
-
-}else{
-    $user_message = "Ban khong thuoc cong ty nao ";
-
-}
-
-
-
 //tim kiem
-if(isset($_POST['search'])){
-    $_SESSION['search'] = $_POST['search'];
-    header("Location: search.php");
+$search = $_SESSION['search'];
+$sql = "SELECT * FROM khachhang WHERE ten LIKE '%".$search."%' ";
+$result = mysqli_query($mysqli, $sql);
+if($result && mysqli_num_rows($result) > 0){
+    $id_kh = mysqli_fetch_assoc($result)['id_kh'];
+    $ten = mysqli_fetch_assoc($result)['ten'];
+    $tuoi = mysqli_fetch_assoc($result)['tuoi'];
+    $dia_chi = mysqli_fetch_assoc($result)['diachi'];
+    $nghe_nghiep = mysqli_fetch_assoc($result)['nghe_nghiep'];
+}else{
+    $error = "Không tìm thấy khách hàng";
 }
 ?>
 <!DOCTYPE html>
@@ -228,97 +185,20 @@ if(isset($_POST['search'])){
         <div style="margin-right: 58em;font-size: 20px;">
             QUẢN LÝ BÁN HÀNG
         </div>
-        <div style="margin-right: 15px;">
+        <!-- <div style="margin-right: 15px;">
             Xin chào, <br> <?php echo $ten?>
-        </div>
+        </div> -->
     </div>
     <section class="main">
         <div class="tab-left">
-                <a href="user.php" class="active">Trang chủ</a>
+                <a href="user.php">Trang chủ</a>
                 <a href="role.php">Quản lý phân quyền</a>
                 <a href="account.php">Quản lý tài khoản cá nhân</a>
                 <a href="customer.php">Quản lý khách hàng</a>
                 <a href="donhang.php">Quản lý đơn hàng</a>
         </div>
         <div class="tab-right">
-            <div class="chiso">
-            <div class="card">
-                    <div class="big">
-                        <?php
-                        echo $tdh;            
-                        ?>
-                    </div>
-                    Tổng sô đơn hàng
-                </div>
-                <div class="card">
-                    <div class="big">
-                        <?php
-                        echo $tkh;            
-                        ?>
-                    </div>
-                    Tổng sô khách hàng
-                </div>
-                <div class="search">
-                    <form action="" method="post">
-                        <input type="text">
-                        <div class="btns">
-                        <input type="submit" name="search" value="Search">
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-            <div class="list">
-                <div class="list_dh">
-                    <div style="font-size: 25px;margin-left: 40px;">
-                        Danh sách đơn hàng mới nhất
-                    </div>
-                    <table class="table-list">
-                        <thead>
-                            <tr>
-                                <th>Tên đơn hàng</th>
-                                <th>Ngày</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            while ($row1 = mysqli_fetch_assoc($list_dh)) {
-                                echo '<tr>';
-                                echo '<td>' . $row1['ten_donhang'] . '</td>';
-                                echo '<td>' . $row1['ngay'] . '</td>';
-                                echo '</tr>';
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="list_kh">
-                    <div style="font-size: 25px;margin-left: 40px">
-                        Danh sách khách hàng mới nhất
-                    </div>
-                    <table class="table-list">
-                        <thead>
-                            <tr>
-                                <th>Têm khách hàng</th>
-                                <th>Tuổi</th>
-                                <th>Địa chỉ</th>
-                                <th>Nghề nghiệp</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            while ($row2 = mysqli_fetch_assoc($list_kh)) {
-                                echo '<tr>';
-                                echo '<td>' . $row2['ten'] . '</td>';
-                                echo '<td>' . $row2['tuoi'] . '</td>';
-                                echo '<td>' . $row2['dia_chi'] . '</td>';
-                                echo '<td>' . $row2['nghe_nghiep'] . '</td>';
-                                echo '</tr>';
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="search-result">
 
             </div>
 
