@@ -9,15 +9,15 @@ if ($mysqli -> connect_errno) {
   exit();
 }
 //tim kiem
-$search = $_SESSION['search'];
+$search = $_SESSION['se'];
 $sql = "SELECT * FROM khachhang WHERE ten LIKE '%".$search."%' ";
 $result = mysqli_query($mysqli, $sql);
-if($result && mysqli_num_rows($result) > 0){
-    $id_kh = mysqli_fetch_assoc($result)['id_kh'];
-    $ten = mysqli_fetch_assoc($result)['ten'];
-    $tuoi = mysqli_fetch_assoc($result)['tuoi'];
-    $dia_chi = mysqli_fetch_assoc($result)['diachi'];
-    $nghe_nghiep = mysqli_fetch_assoc($result)['nghe_nghiep'];
+if($row =mysqli_fetch_assoc($result) ){
+    $id_kh = $row['id_kh'];
+    // $ten = mysqli_fetch_assoc($result)['ten'];
+    // $tuoi = mysqli_fetch_assoc($result)['tuoi'];
+    // $dia_chi = mysqli_fetch_assoc($result)['diachi'];
+    // $nghe_nghiep = mysqli_fetch_assoc($result)['nghe_nghiep'];
 }else{
     $error = "Không tìm thấy khách hàng";
 }
@@ -177,17 +177,20 @@ if($result && mysqli_num_rows($result) > 0){
             width: 50%;
             align-items: center;
         }
+
+        
     </style>
 </head>
 <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <div class="header">
         <img src="logo.jpg" alt="">
         <div style="margin-right: 58em;font-size: 20px;">
             QUẢN LÝ BÁN HÀNG
         </div>
-        <!-- <div style="margin-right: 15px;">
-            Xin chào, <br> <?php echo $ten?>
-        </div> -->
+        <div style="margin-right: 15px;">
+            Xin chào, <br> <?php echo $_SESSION['login']?>
+        </div>
     </div>
     <section class="main">
         <div class="tab-left">
@@ -198,9 +201,53 @@ if($result && mysqli_num_rows($result) > 0){
                 <a href="donhang.php">Quản lý đơn hàng</a>
         </div>
         <div class="tab-right">
-            <div class="search-result">
-
+            <div style="font-size: 25px;
+            margin-left: 40px;
+            margin-bottom: 20px;" >
+                Kết quả tìm kiếm
             </div>
+            <table class="table-list">
+                <thead>
+                    <tr>
+                        <th>ID khách hàng</th>
+                        <th>Tên</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if($result){
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo '<tr class  = "row" data-id_kh_data = "'.$row['id_kh'].'">';
+                            echo '<td>' . $row['id_kh'] . '</td>';
+                            echo '<td>' . $row['ten'] . '</td>';
+                            echo '</tr>';
+                        }
+                    }else {
+                        echo "Không có giá trị càn tìm kiếm";                    }
+                    ?>
+                    <script>
+                        $(document).ready(function(){
+                            $('.row').click(function (e) { 
+                                e.preventDefault();
+                                var id_kh = $(this).data('id_kh_data');
+                                
+                                $.ajax({
+                                    url: 'detail_kh.php',
+                                    method: 'POST',
+                                    data: {id_kh:id_kh },
+                                    success:function(response){
+                                        $('.detail_kh').html(response);
+                                    }
+                                })
+                            });
+                        })
+                    </script>
+                    <div class="detail_kh">
+
+                    </div>
+                </tbody>
+            </table>
+
 
         </div>
     </section>

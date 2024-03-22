@@ -6,7 +6,6 @@ if ($mysqli -> connect_errno) {
   echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
   exit();
 }
-if(isset($_POST['deletecty'])){
     $ten_congty = $_POST['ten_congty'];
     $admincty = $_POST['admincty'];
     $giamdoc = $_POST['giamdoc'];
@@ -31,39 +30,5 @@ if(isset($_POST['deletecty'])){
         echo "Error";
     }
     $mysqli->close();
-}
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý công ty</title>
-</head>
-<body>
-    <div>
-        <form action="" method="post">
-            <table>
-                <tr>
-                    <td>Xóa Công ty</td>
-                </tr>
-                <tr>
-                    <td>Tên công ty</td>
-                    <td><input type="text" name="ten_congty"></td>
-                </tr>
-                <tr>
-                    <td>Username admin công ty</td>
-                    <td><input type="text" name="admincty"></td>
-                </tr>
-                <tr>
-                    <td>Username giám đốc công ty</td>
-                    <td><input type="text" name="giamdoc"></td>
-                </tr>
-                <tr>
-                    <td><input type="submit" name="deletecty" value="Xóa công ty"></td>
-                </tr>
-            </table>
-        </form>
-    </div>
-</body>
-</html>
+

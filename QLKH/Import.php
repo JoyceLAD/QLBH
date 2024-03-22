@@ -1,31 +1,30 @@
 <?php
 session_start();
 require_once 'PHPExcel/Classes/PHPExcel.php';
+
+// Kết nối đến cơ sở dữ liệu
 $mysqli = new mysqli("localhost", "root", "", "qlbh");
 if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: " . $mysqli->connect_error;
     exit();
 }
-//Kiem tra quyen import khach hanng
-$username = $_SESSION['login'];
-$sql1 = "SELECT id_tk FROM taikhoan WHERE username = '".$username."'";
-$id =mysqli_fetch_assoc(mysqli_query($mysqli, $sql1))['id_tk'];
 
-$sql_check = "SELECT * FROM phanquyen WHERE id_tk = '".$id."'";
-$result = mysqli_query($mysqli, $sql_check);
-$result1 = mysqli_num_rows($result);
-if($result1 <=0){
-    echo"Khong co quyen them khach hang";
-    header("Location: http://localhost/QuanLyBanHang/customer.php");
-}
-if(isset($_POST['submit'])){
+// Kiểm tra xem tệp Excel đã được gửi lên chưa
+if(isset($_FILES['file'])){
     $file = $_FILES['file'];
-    $excel = PHPExcel_IOFactory::load($file);
+
+    // Xác định đường dẫn tạm thời của tệp Excel
+    $file_tmp = $file['tmp_name'];
+
+    // Load tệp Excel vào đối tượng PHPExcel
+    $excel = PHPExcel_IOFactory::load($file_tmp);
     $sheet = $excel->getActiveSheet();
+
+    // Lặp qua từng dòng trong tệp Excel và chèn dữ liệu vào cơ sở dữ liệu
     foreach ($sheet->getRowIterator() as $row) {
         $rowData = $row->getCellIterator();
         $data = array();
-        
+
         // Lặp qua từng ô trong dòng
         foreach ($rowData as $cell) {
             $data[] = $cell->getValue();
@@ -39,20 +38,10 @@ if(isset($_POST['submit'])){
         $stmt->close();
     }
 
+    // Thông báo import thành công
     echo "Import thành công!";
+} else {
+    // Thông báo lỗi nếu không tìm thấy tệp Excel
+    echo "Không tìm thấy tệp Excel!";
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm tài khoản</title>
-</head>
-<body>
-    <form action="" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="file">
-        <input type="submit" value="import" name="submit">;
-    </form>
-</body>
-</html>

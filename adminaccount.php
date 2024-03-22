@@ -47,7 +47,7 @@ if ($mysqli->connect_errno) {
             border: none;
             border-radius: 5px;
         }
-        .addcty, .deletecty, .updatecty, .importcty{
+        .addtk, .deletetk, .updatetk{
             width: 380px;
             background-color: hsl(0deg 0% 100%);
             border-radius: 5px;
@@ -109,77 +109,73 @@ if ($mysqli->connect_errno) {
     </div>
     <section class="main">
         <div class="tab-left">
-                <a href="admin.php" class="active">Quản lý công ty</a>
-                <a href="adminaccount.php">Quản lý tài khoản</a>
+                <a href="admin.php" >Quản lý công ty</a>
+                <a href="adminaccount.php" class="active">Quản lý tài khoản</a>
         </div>
         <div class="tab-right">
-            <button class="function-btn" id="add-btn">Thêm công ty</button>
-            <button class="function-btn" id="delete-btn">Xóa công ty</button>
-            <button class="function-btn" id="update-btn">Chỉnh sửa công ty</button>
+            <button class="function-btn" id="add-btn">Thêm tài khoản</button>
+            <button class="function-btn" id="delete-btn">Xóa tài khoản</button>
+            <button class="function-btn" id="update-btn">Chỉnh sửa tài khoản</button>
 
-            <div class="addcty" id="addform" style="display: none;">
+            <div class="addtk" id="addform" style="display: none;">
                 <form action="" method="post" id="addCustomerForm">
                     <div class="title">
-                        Nhập các thông tin cần thiết để thêm công ty
+                        Nhập các thông tin cần thiết để thêm tài khoản
                     </div>
-                    <div class="input" id="addtencty">
-                        Tên công ty
+                    <div class="input" id="addusername">
+                        Username
                         <input type="text">
                     </div>
-                    <div class="input" id="add_username_admincty">
-                        Username admin công ty
+                    <div class="input" id="addpassword">
+                        Password
                         <input type="text" >
                     </div>
-                    <div class="input" id="add_username_gdcty">
-                        Username giám đốc công ty
+                    <div class="input" id="addten">
+                        Tên
                         <input type="text">
                     </div>
                     <div class="btn">
-                    <input type="submit" name="addcty" value="Thêm" id="addsubmit">
+                    <input type="submit" name="addtk" value="Thêm" id="addsubmit">
                     </div>
                 </form>
             </div>
-            <div class="deletecty" id="deleteform" style="display: none;">
+            <div class="deletetk" id="deleteform" style="display: none;">
                 <form action="" method="post" id="deleteCustomerForm">
                     <div class="title">
-                        Nhập các thông tin cần thiết để xóa công ty
+                        Nhập các thông tin cần thiết để xóa tài khoản
                     </div>
-                    <div class="input" id="deletetencty">
-                        Tên công ty
+                    <div class="input" id="deleteusername">
+                        Username
                         <input type="text">
                     </div>
-                    <div class="input" id="delete_username_admincty">
-                        Username admin công ty
-                        <input type="text" >
-                    </div>
-                    <div class="input" id="delete_username_gdcty">
-                        Username giám đốc công ty
+                    <div class="input" id="deleteten">
+                        Tên
                         <input type="text" >
                     </div>
                     <div class="btn">
-                    <input type="submit" name="deletekh" value="Xóa" id="deletesubmit">
+                    <input type="submit" name="deletetk" value="Xóa" id="deletesubmit">
                     </div>
                 </form>
             </div>
-            <div class="updatecty" id="updateform" style="display: none;">
+            <div class="updatetk" id="updateform" style="display: none;">
                 <form action="" method="post" id="updateCustomerForm">
                     <div class="title">
-                        Nhập các thông tin cần thiết để chỉnh sửa công ty
+                        Nhập các thông tin cần thiết để chỉnh sửa tài khoản
                     </div>
-                    <div class="input" id="updatetencty">
-                        Tên công ty
+                    <div class="input" id="updateusername">
+                        Username
                         <input type="text">
                     </div>
-                    <div class="input" id="update__username_admincty">
-                        Username admin công ty cần sửa
+                    <div class="input" id="updatepassword">
+                        Password chỉnh sửa
                         <input type="text">
                     </div>
-                    <div class="input" id="update__username_gdcty">
-                        Username giám đốc công ty
+                    <div class="input" id="updateten">
+                        Tên chỉnh sửa
                         <input type="text">
                     </div>
                     <div class="btn">
-                    <input type="submit" name="updatedh" value="Chỉnh sửa" id="updatesubmit">
+                    <input type="submit" name="updatekh" value="Chỉnh sửa" id="updatesubmit">
                     </div>
                 </form>
             </div>
@@ -208,16 +204,16 @@ if ($mysqli->connect_errno) {
                     
                     $('#addCustomerForm').submit(function(e){
     
-                        var addtencty = $("#addtencty input").val();
-                        var add_username_admincty = $("#add_username_admincty input").val();
-                        var add_username_gdcty = $("#add_username_gdcty input").val();
+                        var addusername = $("#addusername input").val();
+                        var addpassword = $("#addpassword input").val();
+                        var addten = $("#addten input").val();
                         $.ajax({
-                            url: 'QLCT/AddCTy.php',
+                            url: 'QLTK/AddTK.php',
                             type: 'POST',
                             data:{
-                                ten_congty: addtencty,
-                                admincty: add_username_admincty,
-                                giamdoc: add_username_gdcty,
+                                username: addusername,
+                                password: addpassword,
+                                ten: addten,
                             },
                             success: function(data){
                                 alert(data);
@@ -229,16 +225,14 @@ if ($mysqli->connect_errno) {
                     });
                     $('#deleteCustomerForm').submit(function(e){
     
-                        var deletetencty = $("#deletetencty input").val();
-                        var delete_username_admincty = $("#delete_username_admincty input").val();
-                        var delete_username_gdcty = $("#delete_username_gdcty input").val();
+                        var deleteusername = $("#deleteusername input").val();
+                        var deleteten = $("#deleteten input").val();
                         $.ajax({
-                            url: 'QLCT/DeleteCty.php',
+                            url: 'QLTK/DeleteTK.php',
                             type: 'POST',
                             data:{
-                                ten_congty: deletetencty,
-                                admincty: delete_username_admincty,
-                                giamdoc: delete_username_gdcty,
+                                username: deleteusername,
+                                ten: deleteten,
                             },
                             success: function(data){
                                 alert(data);
@@ -250,16 +244,16 @@ if ($mysqli->connect_errno) {
                     });
                     $('#updateCustomerForm').submit(function(e){
     
-                        var updatetencty = $("#updatetencty input").val();
-                        var update_username_admincty = $("#update_username_admincty input").val();
-                        var update_username_gdcty = $("#update_username_gdcty input").val();
+                        var updateusername = $("#updateusername input").val();
+                        var updatepassword = $("#updatepassword input").val();
+                        var updateten = $("#updateten input").val();
                         $.ajax({
-                            url: 'QLCT/UpdateCTy.php',
+                            url: 'QLTK/UpdateTK.php',
                             type: 'POST',
                             data:{
-                                ten_congty: updatetencty,
-                                admincty: update_username_admincty,
-                                giamdoc: update_username_gdcty,
+                                username: updateusername,
+                                password: updatepassword,
+                                ten: updateten,
                             },
                             success: function(data){
                                 alert(data);
