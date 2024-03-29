@@ -1,26 +1,33 @@
 <?php
-$mysqli = new mysqli("localhost","root","","qlbh");
+$mysqli = new mysqli("localhost", "root", "", "qlbh");
 
 // Check connection
-if ($mysqli -> connect_errno) {
-  echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
-  exit();
+if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+    exit();
 }
-    $ten_congty = $_POST['ten_congty'];
-    $admincty = $_POST['admincty'];
-    $giamdoc = $_POST['giamdoc'];
 
+$ten_congty = $_POST['ten_congty'];
+$admincty = $_POST['admincty'];
+$giamdoc = $_POST['giamdoc'];
+
+$check = "SELECT COUNT(*) AS total FROM congty WHERE ten_congty = '".$ten_congty."'";
+$result = $mysqli->query($check);
+$row = $result->fetch_assoc();
+if ($row['total'] > 0) {
+    echo "Tên công ty đã tồn tại. Vui lòng chọn tên khác.";
+} else {
     $idadmincty = "SELECT id_tk FROM taikhoan WHERE username = '".$admincty."'";
     $idgiamdoccty = "SELECT id_tk FROM taikhoan WHERE username = '".$giamdoc."'";
-    
-    $r1 = mysqli_query($mysqli,$idadmincty);
-    $r2  =mysqli_query($mysqli, $idgiamdoccty);
-    if($r1 && $r2){
+
+    $r1 = mysqli_query($mysqli, $idadmincty);
+    $r2 = mysqli_query($mysqli, $idgiamdoccty);
+    if ($r1 && $r2) {
         $id_admincty = mysqli_fetch_assoc($r1)['id_tk'];
         $id_giamdoc = mysqli_fetch_assoc($r2)['id_tk'];
-        
+
         $sql3 = "INSERT INTO congty(id_giamdoc, id_admincty, ten_congty) VALUES('".$id_giamdoc."', '".$id_admincty."', '".$ten_congty."')";
-        
+
         if ($mysqli->query($sql3) === TRUE) {
             echo "Thêm công ty mới thành công";
         } else {
@@ -29,5 +36,6 @@ if ($mysqli -> connect_errno) {
     } else {
         echo "Error";
     }
-    $mysqli->close();
+}
+
 ?>

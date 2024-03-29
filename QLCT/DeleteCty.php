@@ -29,6 +29,5 @@ if ($mysqli -> connect_errno) {
     } else {
         echo "Error";
     }
-    $mysqli->close();
 ?>
 

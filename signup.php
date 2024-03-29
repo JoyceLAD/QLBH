@@ -12,7 +12,7 @@ if(isset($_POST['signup'])){
     if($sql_signup){
         $_SESSION['loginS_message'] = "Đăng kí thành công";
     }else{
-        $_SESSION['loginE_message'] = "Đăng kí khonh thành công";
+        $_SESSION['loginE_message'] = "Đăng kí không thành công";
     }
     if(isset($_SESSION['loginS_message'])){
         $loginS_message = $_SESSION['loginS_message'];
@@ -28,6 +28,9 @@ if(isset($_POST['signup'])){
         unset($_SESSION['loginE_message']);
     }
 }
+if(isset($_POST['login'])){
+    header("Location: login.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +40,7 @@ if(isset($_POST['signup'])){
     <title>Sign up</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Be Vietnam Pro", sans-serif;
             background-color: hsl(218deg 50% 91%);
             margin: 0;
             padding: 0;
@@ -56,9 +59,18 @@ if(isset($_POST['signup'])){
         }
 
         .c2 {
-            /* margin-bottom: 8px; */
             padding: 15px 15px 5px 15px;
+            margin-right: 15px;
         }
+        .c3 {
+            padding: 15px 15px 5px 15px;
+            width: 40%;
+        }
+        .c4{
+            text-align: center;
+            margin-top: 20px;
+        }
+
         input[type="text"],
         input[type="password"] {
             padding-top: 8px;
@@ -69,26 +81,59 @@ if(isset($_POST['signup'])){
             margin-top: 8px;
             height: 15px;
         }
-        .btn {
-            text-align: center;
-            margin-top: 20px;
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
-        input[type="submit"] {
+        .btn1 {
+            text-align: center;
+            margin-top: 20px;
+            margin-left: 15px;
+            margin-right: 15px;
+            input[type="submit"] {
             background-color: #4CAF50;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            width: 25%;
             height: 25%;
             font-size: 18px;
-            margin: 0 auto;
-        }
+            width: 100%;
+            }
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
+            input[type="submit"]:hover {
+                background-color: #45a049;
+            }
+            
+        }
+        .btn2 {
+            text-align: center;
+            margin-top: 5px;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-bottom: 30px;
+            input[type="submit"] {
+            background-color: #f0fff0;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            height: 25%;
+            font-size: 18px;
+            width: 100%;
+            color: #4CAF50;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #ccc;
+            }
+            
         }
     </style>
 
@@ -109,12 +154,22 @@ if(isset($_POST['signup'])){
                     Họ và tên:
                     <input type="text" name="ten">
                 </div>
-                <div class = "btn">
+                <div class = "btn1">
                     <input type="submit" name="signup" value="Sign up">
                 </div>
         </form>
+        <div class="login">
+            <div class="c4">
+                Đã có tài khoản?
+            </div>
+            <div class = "btn2">
+                <input type="submit" name="login" value="Đăng nhập ngay">
+            </div>
+        </div>
         <!-- <div id="loginSuccesMessage" style="text-align: center; margin-top: 10px; font-weight: bold; color: green;"><?php if($loginS_message)echo $loginS_message; ?></div>
         <div id="loginErrorMessage" style="text-align: center; margin-top: 10px; font-weight: bold; color: red;"><?php if($loginE_message)echo $loginE_message; ?></div> -->
+
+
     </div>
 
 </body>

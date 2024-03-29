@@ -10,17 +10,21 @@ if ($mysqli -> connect_errno) {
 }
 //tim kiem
 $search = $_SESSION['se'];
-$sql = "SELECT * FROM khachhang WHERE ten LIKE '%".$search."%' ";
+$id_cty = $_SESSION['id_cty'];
+$sql = "SELECT DISTINCT khachhang.* 
+FROM khachhang 
+INNER JOIN donhang ON donhang.id_kh = khachhang.id_kh
+WHERE donhang.id_cty = '".$id_cty."'
+and (khachhang.ten LIKE '%".$search."%') ";
+
+
 $result = mysqli_query($mysqli, $sql);
-if($row =mysqli_fetch_assoc($result) ){
-    $id_kh = $row['id_kh'];
-    // $ten = mysqli_fetch_assoc($result)['ten'];
-    // $tuoi = mysqli_fetch_assoc($result)['tuoi'];
-    // $dia_chi = mysqli_fetch_assoc($result)['diachi'];
-    // $nghe_nghiep = mysqli_fetch_assoc($result)['nghe_nghiep'];
-}else{
-    $error = "Không tìm thấy khách hàng";
-}
+// if( mysqli_num_rows($result) > 0){
+//     $row =mysqli_fetch_assoc($result);
+//     $id_kh = $row['id_kh'];
+// }else{
+//     $error = "Không tìm thấy khách hàng";
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,156 +33,38 @@ if($row =mysqli_fetch_assoc($result) ){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User page</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-        :root {
-            --c-text-primary: #282a32;
-            --c-text-secondary: #686b87;
-            --c-text-action: #404089;
-            --c-accent-primary: #434ce8;
-            --c-border-primary: #eff1f6;
-            --c-background-primary: #ffffff;
-            --c-background-secondary: #fdfcff;
-            --c-background-tertiary: #ecf3fe;
-            --c-background-quaternary: #e9ecf4;        }
-        .body {
-            line-height: 1.5;
-            min-height: 100vh;
-            font-family: "Be Vietnam Pro", sans-serif;
-            background-color: var(--c-background-secondary);
-            color: var(--c-text-primary);
-        }
-        .header{
-            display: flex;
-            flex-grow: 1;
-            align-items: center;
-            justify-content: space-between;
-            height: 80px;
-            border-bottom: 1px solid var(--c-border-primary);
-            background-color: var(--c-background-primary);
-            img{
-                width: 5%;
-                padding-left:2em ;
-                padding-bottom: 5px;
-                padding-right: 2em;
-            }
-        }
-        .header-link{
-            display: flex;
-            align-items: center;
-            a{
-                text-decoration: none;
-                color: var(--c-text-action);
-                font-size: 2rem ;
-                font-weight: 500;
-                transition: 0.15s ease;
-                border-bottom: 3px solid transparent;
-                & + *{
-                    margin-left: 1.5rem;
-                }
-                &:hover, &:focus{
-                    color: var(--c-accent-primary);
-                    border-bottom-color: var(--c-accent-primary);
-                }
-            }
-        }
-        .main{
+        .modal{
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
-            display: flex;
-            justify-content: space-around;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
         }
-        .tab-left{
-            display: flex;
-            flex-direction: column;
-            width: 25%;
-            border: 1px solid var(--c-border-primary);
-            a {
-                display: flex;
-                align-items: center;
-                padding: 0.75em 1em;
-                background-color: transparent;
-                border-radius: 8px;
-                text-decoration: none;
-                font-weight: 500;
-                color: var(--c-text-action);
-                transition: 0.15s ease;
-                &:hover,
-                &:focus,
-                &.active {
-                    background-color: var(--c-background-tertiary);
-                    color: var(--c-accent-primary);
-                }
-
-                & + * {
-                    margin-top: 0.25rem;
-                }
-            }
-        }
-        .tab-right{
-            width: 65%;
-            display: block;
-        }
-        .chiso{
-            display: flex;
-            margin-bottom: 30px;
-        }
-        .card{
-            box-sizing: border-box;
-            padding: 2rem 2rem 2rem 2rem;
-            background: #e9ecf4;
-			height: 160px;
-			align-items: center;
-			justify-content: flex-start;
-			border: 1px solid #eff1f6;
-			border-radius: 5px;
-            margin-left: 40px;
-            margin-right: 131px;
-            .big{
-                display: block;
-                font-size: 2em;
-                line-height: 150%;
-                color: #1b253d;
-            }
-        }
-        .list{
-            display: flex;
-        }
-        .table-list{
-            border-collapse:collapse ;
-            margin-left: 40px;
-            margin-top: 10px;
-            margin-right: 30px;
+        .content{
+            width: 380px;
+            background-color: hsl(0deg 0% 100%);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            border: 1px solid #888;
+            margin-left: 35%;
+            margin-top: 5%;
 
         }
-        .table-list th,.table-list td{
-            border: 1px solid #eff1f6;
-            text-align: left;
-            padding: 2rem;
-        }
-        .search{
-            position: relative;
-            display: flex;
-            input{
-                font: inherit;
-                color: inherit;
-                text-decoration: none;
-                height: 40px;
-                border-radius: 8px;
-                border: 2px solid var(--c-border-primary);
-                color: var(--c-text-action);
-                font-size: 0.875rem;
-                transition: 0.15s ease;
-                width: 150%;
-                line-height: 1;
-            }
-
-        }
-        .btns{
-            width: 50%;
-            align-items: center;
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 40px;
         }
 
-        
+
     </style>
 </head>
 <body>
@@ -201,11 +87,11 @@ if($row =mysqli_fetch_assoc($result) ){
                 <a href="donhang.php">Quản lý đơn hàng</a>
         </div>
         <div class="tab-right">
-            <div style="font-size: 25px;
-            margin-left: 40px;
+            <h1 style="font-size: 30px;
+            margin-left: 7px;
             margin-bottom: 20px;" >
                 Kết quả tìm kiếm
-            </div>
+            </h1>
             <table class="table-list">
                 <thead>
                     <tr>
@@ -215,6 +101,7 @@ if($row =mysqli_fetch_assoc($result) ){
                 </thead>
                 <tbody>
                     <?php
+                    // echo mysqli_num_rows($result);
                     if($result){
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo '<tr class  = "row" data-id_kh_data = "'.$row['id_kh'].'">';
@@ -236,18 +123,26 @@ if($row =mysqli_fetch_assoc($result) ){
                                     method: 'POST',
                                     data: {id_kh:id_kh },
                                     success:function(response){
-                                        $('.detail_kh').html(response);
+                                        $('.modal').css("display", "block");
+                                        $('.detail_kh').html(response).addClass('show');
                                     }
                                 })
                             });
+                            $('.close').click(function(){
+                                $('.modal').css("display", "none");
+                                $('.detail_kh').removeClass('show');
+                            })
                         })
                     </script>
-                    <div class="detail_kh">
-
-                    </div>
                 </tbody>
             </table>
-
+            <div class="modal">
+                <div class="content">
+                    <span class="close">&times;</span>
+                    <div class="detail_kh">
+                    </div>
+                </div>
+            </div>
 
         </div>
     </section>

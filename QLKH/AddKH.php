@@ -16,7 +16,7 @@
  if (!$sql_addkh) {
     echo "Lỗi: " . mysqli_error($mysqli);
 }else{
-    echo "Thêm khách hàng thành công";
+    echo "Thêm khách hàng thành công với mã là: ".mysqli_insert_id($mysqli);
 }
 
 

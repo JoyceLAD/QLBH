@@ -13,7 +13,7 @@ if(isset($_POST['login'])){
     if(!$mysqli){
         die("Kết nối đến CSDL thất bại: " . mysqli_connect_error());
     }
-    if($role = "admin"){
+    if($role == "admin"){
         $sql2 = "SELECT * FROM a WHERE username='".$taikhoan."' AND password='".$matkhau."'";
         $row2 = mysqli_query($mysqli, $sql2);
         $count2 = mysqli_num_rows($row2);
@@ -23,11 +23,10 @@ if(isset($_POST['login'])){
             header("Location: admin.php");
             exit();
         }else{
-            $login_message =  "Tên đăng nhập hoặc mật khẩu không đúng.";
-        }
-    }
+            $login_message =  "Tên đăng nhập hoặc mật khẩu không đúng";
 
-    if($role = "user"){
+        }
+        }if($role == "user"){
         $sql1 = "SELECT * FROM taikhoan WHERE username='".$taikhoan."' AND password='".$matkhau."'";
         $row1 = mysqli_query($mysqli, $sql1);
         $count1 = mysqli_num_rows($row1);
@@ -37,11 +36,18 @@ if(isset($_POST['login'])){
             header("Location: user.php");
             exit();
         }else{
-            $login_message =  "Tên đăng nhập hoặc mật khẩu không đúng.";
+            $login_message =  "Tên đăng nhập hoặc mật khẩu không đúng";
         }
+    }else{
+        $login_message =  "Tên đăng nhập hoặc mật khẩu không đúng";
     }
 
 
+
+
+}
+if(isset($_POST['signup'])){
+    header("Location: signup.php");
 }
 ?>
 <!DOCTYPE html>
@@ -53,7 +59,7 @@ if(isset($_POST['login'])){
     <!-- <link rel="stylesheet" href="style.css"> -->
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Be Vietnam Pro", sans-serif;
             background-color: hsl(218deg 50% 91%);
             margin: 0;
             padding: 0;
@@ -72,12 +78,16 @@ if(isset($_POST['login'])){
         }
 
         .c2 {
-            /* margin-bottom: 8px; */
             padding: 15px 15px 5px 15px;
+            margin-right: 15px;
         }
         .c3 {
             padding: 15px 15px 5px 15px;
             width: 40%;
+        }
+        .c4{
+            text-align: center;
+            margin-top: 20px;
         }
 
         input[type="text"],
@@ -98,27 +108,55 @@ if(isset($_POST['login'])){
             border: 1px solid #ccc;
         }
 
-        .btn {
+        .btn1 {
             text-align: center;
             margin-top: 20px;
-        }
-
-        input[type="submit"] {
+            margin-left: 15px;
+            margin-right: 15px;
+            input[type="submit"] {
             background-color: #4CAF50;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            width: 25%;
             height: 25%;
             font-size: 18px;
-            margin: 0 auto;
+            width: 100%;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #45a049;
+            }
+            
+        }
+        .btn2 {
+            text-align: center;
+            margin-top: 5px;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-bottom: 30px;
+            input[type="submit"] {
+            background-color: #f0fff0;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            height: 25%;
+            font-size: 18px;
+            width: 100%;
+            color: #4CAF50;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #ccc;
+            }
+            
         }
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
+
+
     </style>
 
 </head>
@@ -141,10 +179,28 @@ if(isset($_POST['login'])){
                         <option value="user">User</option>
                     </select>
                 </div>
-                <div class = "btn">
+                <div class = "btn1">
                     <input type="submit" name="login" value="Login">
                 </div>
+                <div class="sign up">
+                    <div class="c4">
+                        Chưa có tài khoản?
+                    </div>
+                    <div class = "btn2">
+                        <input type="submit" name="signup" value="Tạo tài khoản mới">
+                    </div>
+                </div>
                 <div id="loginMessage" style="text-align: center; margin-top: 10px; font-weight: bold; color: red;"><?php if($login_message)echo $login_message; ?></div>
+                <script>
+                    $(document).ready(function(){
+                        $("#loginMessage").show();
+                        setTimeout(function(){
+                            $("#loginMessage").hide();
+                        }, 2000);
+                    });
+
+                </script>
+
         </form>
     </div>
 

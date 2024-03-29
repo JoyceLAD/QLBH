@@ -14,6 +14,7 @@ WHERE id_kh = '".$id_kh."' ";
     $tdh = mysqli_fetch_assoc(mysqli_query($mysqli, $sql1))['tdh'];
     if(mysqli_num_rows($result) >0){
     while($row  = mysqli_fetch_assoc($result)){
+        echo "<h1>Thông tin tổng quan của khách hàng</h1>";
         echo "<p>ID khách hàng: " . $row['id_kh'] . "</p>";
         echo "<p>Tên: " . $row['ten'] . "</p>";
         echo "<p>Số đơn hàng đã mua: " . $tdh . "</p>";

@@ -1,27 +1,3 @@
-<!-- 
-session_start();
-if(!isset($_SESSION['login']) || $_SESSION['role'] =="user"){
-    header("Location: login.php");
-}
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>admin</title>
-</head>
-<body>
-    <li><a href="QLCT/AddCTy.php">Them cong ty</a></li>
-    <li><a href="QLCT/DeleteCty.php">Xoa cong ty</a></li>
-    <li><a href="QLCT/UpdateCTy.php">Chinh sua cong ty</a></li>
-    <li><a href="QLTK/AddTK.php">Them tai khoan</a></li>
-    <li><a href="QLTK/DeleteTK.php">Xoa tai khoan</a></li>
-    <li><a href="QLTK/UpdateTK.php">Chinh sua tai khoan</a></li>
-
-</body>
-</html> -->
-
 <?php
 session_start();
 $mysqli = new mysqli("localhost", "root", "", "qlbh");
@@ -58,27 +34,35 @@ if ($mysqli->connect_errno) {
         }
         .title{
             font-size: 25px;
-            margin-left: 40px;
+            margin-left: 20px;
             margin-bottom: 20px;
+            text-align: center;
+            margin-right: 20px;
         }
         .btn {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
+            /* margin-left: 15px;
+            margin-right: 10px; */
+
         }
         .input{
             margin-top: 5px;
+            margin-left: 15px;
+            margin-right: 15px;
         }
         input[type="submit"] {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            /* padding: 10px 20px; */
+            padding-top: 10px;
+            padding-bottom: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             width: 25%;
             height: 25%;
             font-size: 14px;
-            margin: 0 auto;
         }
 
         input[type="submit"]:hover {
@@ -95,16 +79,32 @@ if ($mysqli->connect_errno) {
             margin-right: 8px;
         }
     </style>
+
 </head>
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <div class="header">
         <img src="logo.jpg" alt="">
-        <div style="margin-right: 58em;font-size: 20px;">
+        <div style="margin-right: 53.5em;font-size: 20px;">
             QUẢN LÝ BÁN HÀNG
         </div>
-        <div style="margin-right: 15px;">
-            Xin chào, <br> <?php echo $_SESSION['login']?>
+        <div class="acc" style="margin-right: 10px;">
+            Xin chào, <?php echo $_SESSION['login']?>
+            <div id="logout" style="">
+                Đăng xuất
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $('#logout').click(function(){
+                        $.ajax({
+                            url:'logout.php',
+                            type: 'POST',
+                            success:function(data){
+                                window.location.href = 'login.php';                            }
+                        })
+                    })
+                })
+            </script>
         </div>
     </div>
     <section class="main">
@@ -188,18 +188,26 @@ if ($mysqli->connect_errno) {
                     if(form.is(':visible')){
                         form.hide();
                     }else {
-                        $('.addkh').hide();
                         form.show();
                     }
                     }
                     $('#add-btn').click(function(){
                         toggleForm('#addform');
+                        $('#deleteform').hide();
+                        $('#updateform').hide();
+
                     })
                     $('#delete-btn').click(function(){
                         toggleForm('#deleteform');
+                        $('#addform').hide();
+                        $('#updateform').hide();
+
                     })
                     $('#update-btn').click(function(){
                         toggleForm('#updateform');
+                        $('#addform').hide();
+                        $('#deleteform').hide();
+
                     })
                     
                     $('#addCustomerForm').submit(function(e){

@@ -1,27 +1,10 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quan ly don hang</title>
-</head>
-<body>
-    <li><a href="QLDH/AddDH.php">Them don hang</a></li>
-    <li><a href="QLDH/DeleteDH.php">Xoa don hang</a></li>
-    <li><a href="QLDH/UpdateDH.php">Chinh sua don hang</a></li>
-    <li><a href="QLDH/Import.php">Nhap don hang</a></li>
-    <li><a href="QLDH/Export.php">Xuat don hang</a></li>
-</body>
-</html> -->
-
 <?php
 session_start();
-$mysqli = new mysqli("localhost", "root", "", "qlbh");
-if ($mysqli->connect_errno) {
-    echo "Failed to connect to MySQL: " . $mysqli->connect_error;
-    exit();
-}
-?>
+$mysqli = new mysqli("localhost","root","","qlbh");
+if ($mysqli -> connect_errno) {
+  echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+  exit();
+}?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,27 +33,35 @@ if ($mysqli->connect_errno) {
         }
         .title{
             font-size: 25px;
-            margin-left: 40px;
+            margin-left: 20px;
             margin-bottom: 20px;
+            text-align: center;
+            margin-right: 20px;
         }
         .btn {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
+            /* margin-left: 15px;
+            margin-right: 10px; */
+
         }
         .input{
             margin-top: 5px;
+            margin-left: 15px;
+            margin-right: 15px;
         }
         input[type="submit"] {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            /* padding: 10px 20px; */
+            padding-top: 10px;
+            padding-bottom: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             width: 25%;
             height: 25%;
             font-size: 14px;
-            margin: 0 auto;
         }
 
         input[type="submit"]:hover {
@@ -90,14 +81,57 @@ if ($mysqli->connect_errno) {
 </head>
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        window.onload = function(){
+            $.ajax({
+                url: 'CHECK/check.php',
+                method: 'POST',
+                success: function(response){
+                    if(response == '1'){
+                        // alert("Bạn có quyền truy cập.");
+                    } else if(response == '0'){
+                        alert("Bạn không thuộc công ty nào");
+                        window.location.href = "user.php";
+                    } else if(response == 'not_logged_in'){
+                        alert("Vui lòng đăng nhập trước.");
+                        window.location.href = "login.php";
+                    } else {
+                        alert("Đã xảy ra lỗi.");
+                    }
+                },
+                error: function(xhr, status, error){
+                    alert("Đã xảy ra lỗi: " + xhr.responseText);
+                }
+            });
+        };
+    });
+    </script>
+
     <div class="header">
         <img src="logo.jpg" alt="">
-        <div style="margin-right: 58em;font-size: 20px;">
+        <div style="margin-right: 53.5em;font-size: 20px;">
             QUẢN LÝ BÁN HÀNG
         </div>
-        <div style="margin-right: 15px;">
-            Xin chào, <br> <?php echo $_SESSION['login']?>
+        <div class="acc" style="margin-right: 10px;">
+            Xin chào, <?php echo $_SESSION['login']?>
+            <div id="logout" style="">
+                Đăng xuất
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $('#logout').click(function(){
+                        $.ajax({
+                            url:'logout.php',
+                            type: 'POST',
+                            success:function(data){
+                                window.location.href = 'login.php';                            }
+                        })
+                    })
+                })
+            </script>
         </div>
+
     </div>
     <section class="main">
         <div class="tab-left">
@@ -119,15 +153,14 @@ if ($mysqli->connect_errno) {
                     <div class="title">
                         Nhập các thông tin cần thiết để thêm đơn hàng
                     </div>
-                    <div class="input" id="addtenkh">
-                        Tên khách hàng
+                    <div class="input" id="addidkh">
+                        Mã khách hàng
                         <input type="text" >
-                        <!-- name="ten" -->
                     </div>
-                    <div class="input" id="addtencty">
+                    <!-- <div class="input" id="addtencty">
                         Tên công ty
                         <input type="text" name="tencty">
-                    </div>
+                    </div> -->
                     <div class="input" id="addtendh">
                         Tên đơn hàng
                         <input type="text" name="tendh">
@@ -146,12 +179,12 @@ if ($mysqli->connect_errno) {
                     <div class="title">
                         Nhập các thông tin cần thiết để xóa đơn hàng
                     </div>
-                    <div class="input" id="deletetenkh">
-                        Tên khách hàng
+                    <div class="input" id="deleteidkh">
+                        Mã khách hàng
                         <input type="text" >
                     </div>
-                    <div class="input" id="deletetencty">
-                        Tên công ty
+                    <div class="input" id="deleteiddh">
+                        Mã đơn hàng
                         <input type="text">
                     </div>
                     <div class="input" id="deletetendh">
@@ -170,31 +203,15 @@ if ($mysqli->connect_errno) {
             <div class="updatedh" id="updateform" style="display: none;">
                 <form action="" method="post" id="updateCustomerForm">
                     <div class="title">
-                        Nhập các thông tin cần thiết để chỉnh sửa khách hàng
+                        Nhập các thông tin cần thiết để chỉnh sửa đơn hàng
                     </div>
-                    <div class="input" id="updatetenkh">
-                        Tên khách hàng
+                    <div class="input" id="updatemdh">
+                        Mã đơn hàng
+                        <input type="text">
+                    </div>
+                    <div class="input" id="updateidkh1">
+                        Mã khách hàng muốn sửa
                         <input type="text" >
-                    </div>
-                    <div class="input" id="updatetencty">
-                        Tên công ty
-                        <input type="text">
-                    </div>
-                    <div class="input" id="updatetendh">
-                        Tên đơn hàng
-                        <input type="text">
-                    </div>
-                    <div class="input" id="updatengay">
-                        Ngày
-                        <input type="date">
-                    </div>
-                    <div class="input" id="updatetenkh1">
-                        Tên khách hàng muốn sửa
-                        <input type="text" >
-                    </div>
-                    <div class="input" id="updatetencty1">
-                        Tên công ty muốn sửa
-                        <input type="text">
                     </div>
                     <div class="input" id="updatetendh1">
                         Tên đơn hàng muốn sửa
@@ -237,18 +254,29 @@ if ($mysqli->connect_errno) {
                     if(form.is(':visible')){
                         form.hide();
                     }else {
-                        $('.addkh').hide();
                         form.show();
                     }
                     }
                     $('#add-btn').click(function(){
                         toggleForm('#addform');
+                        $('#deleteform').hide();
+                        $('#updateform').hide();
+                        $('#importform').hide();
+
                     })
                     $('#delete-btn').click(function(){
                         toggleForm('#deleteform');
+                        $('#addform').hide();
+                        $('#updateform').hide();
+                        $('#importform').hide();
+
                     })
                     $('#update-btn').click(function(){
                         toggleForm('#updateform');
+                        $('#addform').hide();
+                        $('#deleteform').hide();
+                        $('#importform').hide();
+
                     })
                     $('#export-btn').click(function(){
                         $.ajax({
@@ -264,12 +292,15 @@ if ($mysqli->connect_errno) {
                     })
                     $('#import-btn').click(function(){
                         toggleForm('#importform');
+                        $('#addform').hide();
+                        $('#deleteform').hide();
+                        $('#updateform').hide();
                     })
                     
                     $('#addCustomerForm').submit(function(e){
-    
-                        var addtenkh = $("#addtenkh input").val();
-                        var addtencty = $("#addtencty input").val();
+                        var addidkh = $("#addidkh input").val();
+                        // var addtenkh = $("#addtenkh input").val();
+                        // var addtencty = $("#addtencty input").val();
                         var addtendh = $("#addtendh input").val();
                         var addngay = $("#addngay input").val();
                         
@@ -277,8 +308,9 @@ if ($mysqli->connect_errno) {
                             url: 'QLDH/AddDH.php',
                             type: 'POST',
                             data:{
-                                tenkh: addtenkh,
-                                tencty: addtencty,
+                                id_kh:addidkh,
+                                // tenkh: addtenkh,
+                                // tencty: addtencty,
                                 tendh: addtendh,
                                 ngay: addngay,
                             },
@@ -291,16 +323,16 @@ if ($mysqli->connect_errno) {
                         });
                     });
                     $('#deleteCustomerForm').submit(function(e){
-                        var deletetenkh = $("#deletetenkh input").val();
-                        var deletetencty = $("#deletetencty input").val();
+                        var deleteidkh = $("#deleteidkh input").val();
+                        var deleteiddh = $("#deleteiddh input").val();
                         var deletetendh = $("#deletetendh input").val();
                         var deletengay = $("#deletengay input").val();
                         $.ajax({
                             url: 'QLDH/DeleteDH.php',
                             type: 'POST',
                             data:{
-                                tenkh: deletetenkh,
-                                tencty: deletetencty,
+                                id_kh: deleteidkh,
+                                id_dh: deleteiddh,
                                 tendh: deletetendh,
                                 ngay: deletengay,
                             },
@@ -314,12 +346,12 @@ if ($mysqli->connect_errno) {
                     });
                     $('#updateCustomerForm').submit(function(e){
     
-                        var updatetenkh = $("#updatetenkh input").val();
-                        var updatetencty = $("#updatetencty input").val();
-                        var updatetendh = $("#updatetendh input").val();
-                        var updatengay = $("#updatengay input").val();
-                        var updatetenkh1 = $("#updatetenkh1 input").val();
-                        var updatetencty1 = $("#updatetencty1 input").val();
+                        // var updateidkh = $("#updateidkh input").val();
+                        var updatemdh = $("#updatemdh input").val();
+                        // var updatetendh = $("#updatetendh input").val();
+                        // var updatengay = $("#updatengay input").val();
+                        var updateidkh1 = $("#updateidkh1 input").val();
+                        // var updatetencty1 = $("#updatetencty1 input").val();
                         var updatetendh1 = $("#updatetendh1 input").val();
                         var updatengay1 = $("#updatengay1 input").val();
 
@@ -327,12 +359,12 @@ if ($mysqli->connect_errno) {
                             url: 'QLDH/UpdateDH.php',
                             type: 'POST',
                             data:{
-                                tenkh: updatetenkh,
-                                tencty: updatetencty,
-                                tendh: updatetendh,
-                                ngay: updatengay,
-                                tenkh1: updatetenkh1,
-                                tencty1: updatetencty1,
+                                // id_kh: updateidkh,
+                                id_donhang: updatemdh,
+                                // tendh: updatetendh,
+                                // ngay: updatengay,
+                                id_kh1: updateidkh1,
+                                // tencty1: updatetencty1,
                                 tendh1: updatetendh1,
                                 ngay1: updatengay1,
 
