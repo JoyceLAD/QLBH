@@ -12,10 +12,10 @@ if ($mysqli -> connect_errno) {
 $search = $_SESSION['se'];
 $id_cty = $_SESSION['id_cty'];
 $sql = "SELECT DISTINCT khachhang.* 
-FROM khachhang 
-INNER JOIN donhang ON donhang.id_kh = khachhang.id_kh
-WHERE donhang.id_cty = '".$id_cty."'
-and (khachhang.ten LIKE '%".$search."%') ";
+        FROM khachhang 
+        INNER JOIN donhang ON donhang.id_kh = khachhang.id_kh
+        WHERE donhang.id_cty = '".$id_cty."'
+        AND (khachhang.ten LIKE '%".$search."%' OR khachhang.id_kh LIKE '%".$search."%')";
 
 
 $result = mysqli_query($mysqli, $sql);

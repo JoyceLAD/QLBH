@@ -236,7 +236,7 @@ if ($mysqli->connect_errno) {
                 </form>
             </div>
             <div class="importkh" id="importform" style="display: none;">
-                <form action="" method="post" id="importCustomerForm">
+                <form action="" method="post" id="importCustomerForm" enctype="multipart/form-data">
                     <div class="title">
                         Chọn file để import
                     </div>
